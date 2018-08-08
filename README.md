@@ -27,3 +27,7 @@ some-service:
 
 Now if you exec into the some-service container you can curl http://kube-forwards:8000 and it will hit someservice on the Kubernetes cluster.
 
+# Current limitations. 
+
+Because kubectl does not allow porting to 0.0.0.0 [See here](https://github.com/kubernetes/kubernetes/issues/43962), I have had to go hacky-cowboy and increase local_port by 1000, then add nginx to proxy_pass (local_port) to (local_port + 1000) to maintain expected behaviour. Hopefully they will sort out this bug soon so we can remove the hackiness and make the image smaller.
+
