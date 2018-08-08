@@ -16,16 +16,16 @@ TARGET_PORT is optional. If none is supplied the image will use PORT as both rem
 In your docker-compose file you can simply add:
 ```yaml
 kube-forwards:
-    image: chris-cmsoft/kube_forward:1.0.2
+    image: chriscmsoft/kube-forwards
     environment:
       - SERVICES=someservice:8000, someotherservice:8001:8000
     volumes:
       - ~/.kube/config:/root/.kube/config
-some-service:
+other-service:
     image: some-image:1.0
 ```
 
-Now if you exec into the some-service container you can curl http://kube-forwards:8000 and it will hit someservice on the Kubernetes cluster.
+Now if you exec into the other-service container you can curl http://kube-forwards:8000 and it will hit someservice on the Kubernetes cluster.
 
 # Current limitations. 
 
