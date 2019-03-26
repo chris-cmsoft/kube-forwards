@@ -11,6 +11,14 @@
 
 The image uses and env variable $SERVICES to register proxies.
 
+It also uses a volume mount to your kubernetes config to be able to reach your cluster.
+
+> ### We have explicitly tried to make everything as simple and readable as possible for the following reason:
+
+> Security concern.  
+> We are aware that it poses a significant risk mounting a kubernetes config into a 3rd party container.  
+> If you are concerned about this, you can clone this repo as a starting point and build your own version which you can trust.  
+
 The format is specified in the format {deployment_name}:{local_port}:{?remote_port},{another_deployment_name}...
 
 > The remote_port can be omitted in which case the local_port will be used.
