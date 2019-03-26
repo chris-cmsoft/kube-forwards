@@ -1,17 +1,19 @@
 # Kubernetes port forward utility
 
-> When developing services locally, we sometimes require dependant services to be proxied from our cluster to our local machine to ease development.
-> This image serves the purpose of easing that process.
+> This image was built from need in an environment where there are many microservices and spinning up all of these services and creating test data was a mission every time we wanted to make a small change.  
+> After moving to Kubernetes we started port-forwarding like mad men and women to try connect to kubernetes services.  
+> So I built this image which automates that port-forwarding when running in docker-compose locally.  
+> The plan: simple. Specify a deployment name & port and viola ! You can reach it immediately without any setup.
+> * No manual forwarding
+> * No manual test data creation and recreation
 
 ### Usage
 
-The image uses the environment variable $SERVICES to see which services you need proxied.
+The image uses and env variable $SERVICES to register proxies.
 
-This variable should contain a comma-delimited list of deployments & ports to forward
+The format is specified in the format {deployment_name}:{local_port}:{?remote_port},{another_deployment_name}...
 
-The format for this variable is DEPLOYMENT_NAME:PORT:TARGET_PORT, OTHER_DEPLOYMENT:PORT:TARGET_PORT etc.
-
-TARGET_PORT is optional. If none is supplied the image will use PORT as both remote and local port.
+> The remote_port can be omitted in which case the local_port will be used.
 
 In your docker-compose file you can simply add:
 ```yaml
@@ -25,9 +27,4 @@ other-service:
     image: some-image:1.0
 ```
 
-Now if you exec into the other-service container you can curl http://kube-forwards:8000 and it will hit someservice on the Kubernetes cluster.
-
-# Current limitations. 
-
-Because kubectl does not allow porting to 0.0.0.0 [See here](https://github.com/kubernetes/kubernetes/issues/43962), I have had to go hacky-cowboy and increase local_port by 1000, then add nginx to proxy_pass (local_port) to (local_port + 1000) to maintain expected behaviour. Hopefully they will sort out this bug soon so we can remove the hackiness and make the image smaller.
-
+Now when doing http / database connections to the kubernetes cluster simply specify `kube-forwards` as the host and your port mapping as the port.
