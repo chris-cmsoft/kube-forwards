@@ -1,14 +1,13 @@
-version: '2'
+version: '3'
 
 services:
   kube_forwards:
     build: .
     entrypoint: ['tail', '-f', '/dev/null']
     environment:
-      - SERVICES=authenticationservice:8000, srservice:8001:8000
+      - SERVICES=stock-service:3000
     ports:
-      - 8011:8000
-      - 8012:8001
+      - 3000:3000
     volumes:
       - ~/.kube/config:/root/.kube/config
       - .:/code

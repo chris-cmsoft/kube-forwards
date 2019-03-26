@@ -1,16 +1,20 @@
-FROM ubuntu:16.04
+FROM alpine:3.9
 
-WORKDIR /code
+ENV KUBE_LATEST_VERSION="v1.13.0"
 
-RUN apt-get update && \
-    apt-get install -y apt-transport-https curl python3-dev nginx && \
-    curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && \
-    touch /etc/apt/sources.list.d/kubernetes.list && \
-    echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | tee -a /etc/apt/sources.list.d/kubernetes.list && \
-    apt-get update && \
-    apt-get install -y kubectl=1.11.1-00
+RUN echo 'http://nl.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositories \
+    && apk add --update kubernetes python3 \
+    && mkdir -p /root/.kube \
+    && rm -rf /usr/bin/kubelet \
+              /usr/bin/kubeadm \
+              /usr/bin/kube-scheduler \
+              /usr/bin/kube-proxy \
+              /usr/bin/kube-controller-manager \
+              /usr/bin/kube-apiserver \
+              /usr/bin/hyperkube
 
 COPY . /code
+WORKDIR /code
 
 RUN chmod +x map_services.py entrypoint.sh
 
